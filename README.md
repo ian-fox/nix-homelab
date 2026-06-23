@@ -16,6 +16,8 @@ Documenting my journey to setting up a home-lab fully managed by [nix](https://n
   * Other services in the future like immich, unified logging
 * Configure my personal settings across various other machines with home manager and nix-darwin
 * Stick to libraries that are somewhat popular (I'll leave the bleeding-edge libraries to people who know what they're doing)
+* Take as much advantage of the type system/static analysis as possible
+* Auto-generate documentation
 * Document all this in a (series of) blog posts
 
 ## Eventual Goals
