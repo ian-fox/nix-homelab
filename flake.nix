@@ -2,8 +2,10 @@
   description = "Ian's Nix Config";
 
   inputs = {
+    nixpkgs.url = "https://flakehub.com/f/DeterminateSystems/nixpkgs-weekly/0.1";
+
+    # Todo: does it make any sense to have the inputs.nixpkgs-lib follow nixpkgs?
     flake-parts.url = "github:hercules-ci/flake-parts";
-    nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
   };
 
   outputs = inputs@{ flake-parts, ... }:
