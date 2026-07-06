@@ -4,17 +4,22 @@
   inputs = {
     nixpkgs.url = "https://flakehub.com/f/DeterminateSystems/nixpkgs-weekly/0.1";
 
-    # Todo: does it make any sense to have the inputs.nixpkgs-lib follow nixpkgs?
+    # TODO: does it make any sense to have the inputs.nixpkgs-lib follow nixpkgs?
     flake-parts.url = "github:hercules-ci/flake-parts";
 
+    # TODO: add some kind of automation so I don't have to manually declare nixpkgs.follows every time
     treefmt-nix = {
       url = "github:numtide/treefmt-nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+    devshell = {
+      url = "github:numtide/devshell";
       inputs.nixpkgs.follows = "nixpkgs";
     };
   };
 
   outputs =
-    inputs@{ flake-parts, treefmt-nix, ... }:
+    inputs@{ flake-parts, ... }:
     flake-parts.lib.mkFlake { inherit inputs; } {
       imports = [
         # To import an internal flake module: ./other.nix
@@ -23,7 +28,7 @@
         #   2. Add foo as a parameter to the outputs function
         #   3. Add here: foo.flakeModule
 
-        ./lib/treefmt.nix
+        ./lib/module.nix
       ];
       systems = [
         "x86_64-linux"

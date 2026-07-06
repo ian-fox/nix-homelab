@@ -9,8 +9,8 @@
 
 ## General Design
 
-- Explicitly import modules over using magic glue like import-tree, to make following what's included from where easier.
-- Most things should be dendritic, but top-level inputs will be in the root flake so that they can be set up with `inputs.nixpkgs.follows`
+- Explicitly import modules over using magic glue like import-tree, one less dependency to worry about.
+- Most things should be dendritic, but top-level inputs will be in the root flake so that they can be set up with `inputs.nixpkgs.follows` and to keep the number of direct dependencies visible.
 
 ## Structure
 
