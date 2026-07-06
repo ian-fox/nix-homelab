@@ -2,6 +2,7 @@
   description = "Ian's Nix Config";
 
   inputs = {
+    # nixpkgs-weekly includes a dependency cooldown by default
     nixpkgs.url = "https://flakehub.com/f/DeterminateSystems/nixpkgs-weekly/0.1";
 
     # TODO: does it make any sense to have the inputs.nixpkgs-lib follow nixpkgs?
