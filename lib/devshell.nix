@@ -7,8 +7,8 @@
   perSystem =
     { pkgs, ... }:
     {
-      devshells.default = (
-        { extraModulesPath, ... }@args:
+      devshells.default =
+        { extraModulesPath, ... }:
         {
           # Ref: https://numtide.github.io/devshell/extending.html
           # Ref: https://github.com/numtide/devshell/tree/main/extra
@@ -20,7 +20,6 @@
             enable = true;
             pre-commit.text = "nix fmt && nix flake check";
           };
-        }
-      );
+        };
     };
 }
