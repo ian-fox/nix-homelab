@@ -17,6 +17,10 @@
       url = "github:numtide/devshell";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    home-manager = {
+      url = "github:nix-community/home-manager";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs =
@@ -30,6 +34,10 @@
         #   3. Add here: foo.flakeModule
 
         ./lib/module.nix
+        # ./home/module.nix
+
+        # hosts
+        ./hosts/macbook.nix
       ];
       systems = [
         "x86_64-linux"
