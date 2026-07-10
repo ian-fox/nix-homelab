@@ -51,7 +51,7 @@
 
         # hosts
         ./hosts/macbook.nix
-        ./hosts/forum.nix
+        ./hosts/ms-s1.nix
       ];
       systems = [
         "x86_64-linux"

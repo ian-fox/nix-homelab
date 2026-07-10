@@ -20,8 +20,9 @@
       };
     };
 
-  flake.modules.homeManager.ifox = {
+  flake.modules.homeManager.ifox = { pkgs, ... }: {
     home.username = "ifox";
-    home.stateVersion = "25.05";
+    home.homeDirectory = if pkgs.stdenv.isDarwin then "/Users/ifox" else "/home/ifox";
+    home.stateVersion = "25.11";
   };
 }

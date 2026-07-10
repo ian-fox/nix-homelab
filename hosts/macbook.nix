@@ -35,4 +35,12 @@
       config.flake.modules.darwin."hosts/macbook"
     ];
   };
+
+  flake.homeConfigurations."ifox@macbook" = inputs.home-manager.lib.homeManagerConfiguration {
+    pkgs = inputs.nixpkgs.legacyPackages.aarch64-darwin;
+    modules = with config.flake.modules.homeManager; [
+      devtools
+      ifox
+    ];
+  };
 }
