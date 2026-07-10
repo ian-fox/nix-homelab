@@ -1,5 +1,6 @@
 {
   config,
+  inputs,
   lib,
   ...
 }:
@@ -17,6 +18,7 @@
           home-manager.users.ifox = {
             imports = with config.flake.modules.homeManager; [
               # Modules
+              devtools
 
               # Users
               ifox
@@ -24,5 +26,12 @@
           };
         }
       ];
+  };
+
+  flake.darwinConfigurations.macbook = inputs.nix-darwin.lib.darwinSystem {
+    modules = [
+      inputs.home-manager.darwinModules.home-manager
+      config.flake.modules.darwin."hosts/macbook"
+    ];
   };
 }

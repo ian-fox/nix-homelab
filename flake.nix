@@ -21,6 +21,10 @@
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    nix-darwin = {
+      url = "github:LnL7/nix-darwin";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs =
@@ -34,7 +38,8 @@
         #   3. Add here: foo.flakeModule
 
         ./lib/module.nix
-        # ./home/module.nix
+        ./modules/module.nix
+        ./users/module.nix
 
         # hosts
         ./hosts/macbook.nix

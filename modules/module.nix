@@ -1,0 +1,6 @@
+{ ... }:
+{
+  imports = [
+    ./home/devtools.nix
+  ];
+}
