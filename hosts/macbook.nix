@@ -23,6 +23,7 @@
               # Users
               ifox
             ];
+            home.homeDirectory = "/Users/ifox";
           };
         }
       ];

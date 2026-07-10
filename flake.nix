@@ -21,6 +21,14 @@
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    sops-nix = {
+      url = "github:Mic92/sops-nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+    secrets = {
+      url = "git+file:///etc/nix-secrets";
+      flake = false;
+    };
     nix-darwin = {
       url = "github:LnL7/nix-darwin";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -43,6 +51,7 @@
 
         # hosts
         ./hosts/macbook.nix
+        ./hosts/forum.nix
       ];
       systems = [
         "x86_64-linux"
