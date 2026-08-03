@@ -30,6 +30,7 @@
         #   3. Add here: foo.flakeModule
 
         ./lib/module.nix
+        ./hosts/ms-s1.nix
       ];
       systems = [
         "x86_64-linux"
