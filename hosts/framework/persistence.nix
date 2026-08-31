@@ -3,6 +3,11 @@ _: {
   # every boot, before it's mounted. Nothing on it survives a reboot unless
   # it's declared below under environment.persistence. The NixOS config
   # itself doesn't need to survive since it's rebuilt from the flake.
+  # The persistence bind mounts below (e.g. /etc/machine-id) are needed
+  # before normal fstab mounting, so /persist itself must be mounted in the
+  # initrd rather than later in stage 2.
+  fileSystems."/persist".neededForBoot = true;
+
   boot.initrd.systemd.enable = true;
   boot.initrd.systemd.services.rollback-root = {
     description = "Roll back the root subvolume to an empty state";

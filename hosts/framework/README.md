@@ -42,8 +42,14 @@ live installer):
 nix run github:nix-community/nixos-anywhere -- \
   --generate-hardware-config nixos-facter ./hosts/framework/facter.json \
   --flake .#framework \
+  --build-on-remote \
   --target-host root@<laptop-ip>
 ```
+
+`--build-on-remote` builds the system closure on the laptop itself rather
+than on the controller machine — needed whenever the controller can't
+natively build `x86_64-linux` (e.g. deploying from an aarch64 Mac, which
+can't build Linux derivations at all without a configured builder).
 
 This detects hardware with nixos-facter, writes `facter.json` locally,
 partitions the disk with disko (prompts for the LUKS password), and installs.
@@ -67,9 +73,12 @@ the initial install above:
 1. Declare it in [sops.nix](./sops.nix) (e.g. `sops.secrets."wifi-psk" = { };`), wire it into whatever consumes it, and rebuild with the real
    secrets repo overridden in:
    ```console
-   nixos-rebuild switch --target-host root@<laptop-ip> --flake .#framework \
+   nixos-rebuild switch --target-host root@<laptop-ip> --build-host root@<laptop-ip> \
+     --flake .#framework \
      --override-input secrets git+ssh://git@github.com/<owner>/nix-secrets
    ```
+   (`--build-host` matching `--target-host` builds on the laptop itself —
+   same reasoning as `--build-on-remote` above.)
 
 ## Not yet wired up
 
