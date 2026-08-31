@@ -57,6 +57,12 @@ _: {
         "Videos"
         "Music"
         ".ssh"
+        # App state (Plasma settings, Firefox profile, etc.) plus caches
+        # (font/icon/shader/thumbnail caches, browser cache) so they don't
+        # get rebuilt from scratch on every reboot.
+        ".config"
+        ".local/share"
+        ".cache"
       ];
     };
   };
