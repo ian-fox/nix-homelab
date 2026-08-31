@@ -15,3 +15,4 @@
 ## Structure
 
 - [lib](../lib/): Code related to developing the flake. Checks, formatters, etc.
+- [hosts](../hosts/): NixOS configurations, one directory per machine.

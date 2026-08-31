@@ -17,6 +17,20 @@
       url = "github:numtide/devshell";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    disko = {
+      url = "github:nix-community/disko";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+    impermanence = {
+      url = "github:nix-community/impermanence";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+    # Not wired into any host config yet, added ahead of time. See
+    # hosts/framework/README.md for when/how this gets used.
+    sops-nix = {
+      url = "github:Mic92/sops-nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs =
@@ -30,6 +44,7 @@
         #   3. Add here: foo.flakeModule
 
         ./lib/module.nix
+        ./hosts/module.nix
       ];
       systems = [
         "x86_64-linux"
