@@ -25,11 +25,19 @@
       url = "github:nix-community/impermanence";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    # Not wired into any host config yet, added ahead of time. See
-    # hosts/framework/README.md for when/how this gets used.
     sops-nix = {
       url = "github:Mic92/sops-nix";
       inputs.nixpkgs.follows = "nixpkgs";
+    };
+    # The real secrets live in a separate, private repo so they're decoupled
+    # from this (public) config repo. Defaults to the checked-in, unencrypted
+    # placeholder below so plain `nix build`/`nix flake check` work with no
+    # setup anywhere (including CI); real deploys must explicitly pass
+    # `--override-input secrets git+ssh://git@github.com/<owner>/nix-secrets`.
+    # See hosts/framework/README.md.
+    secrets = {
+      url = "path:./lib";
+      flake = false;
     };
   };
 

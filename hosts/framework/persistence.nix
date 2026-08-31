@@ -1,5 +1,4 @@
-{ ... }:
-{
+_: {
   # Erase-your-darlings: the root subvolume is deleted and recreated empty on
   # every boot, before it's mounted. Nothing on it survives a reboot unless
   # it's declared below under environment.persistence. The NixOS config

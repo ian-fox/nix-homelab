@@ -14,7 +14,9 @@
       "wheel"
       "networkmanager"
     ];
-    openssh.authorizedKeys.keys = [ "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIFsxaPgxP3IFVGWxiEoO3TP16zIdc5YVBrOdbtFNUNeT macbook" ];
+    openssh.authorizedKeys.keys = [
+      "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIFsxaPgxP3IFVGWxiEoO3TP16zIdc5YVBrOdbtFNUNeT macbook"
+    ];
   };
 
   nix.settings.experimental-features = [

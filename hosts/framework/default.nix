@@ -11,6 +11,7 @@
       { hardware.facter.reportPath = ./facter.json; }
       ./disko.nix
       ./persistence.nix
+      ./sops.nix
       ./configuration.nix
     ];
   };
