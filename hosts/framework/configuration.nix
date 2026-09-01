@@ -1,4 +1,4 @@
-{ lib, ... }:
+{ lib, pkgs, ... }:
 {
   networking.hostName = "framework";
   networking.networkmanager.enable = true;
@@ -6,11 +6,10 @@
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
 
+  # Desktop environment
   services.xserver.enable = true;
   services.displayManager.sddm.enable = true;
   services.desktopManager.plasma6.enable = true;
-
-  programs.firefox.enable = true;
 
   # After rebuilding, enroll a finger with `fprintd-enroll` and check it
   # with `fprintd-verify`. Sudo/login/polkit accept it automatically.
@@ -24,6 +23,7 @@
     };
   };
 
+  # TODO: move this to a module
   users.users.ifox = {
     isNormalUser = true;
     extraGroups = [
@@ -35,6 +35,15 @@
     ];
   };
 
+  # Programs
+  # TODO: move to modules for e.g. dev tools
+  programs.firefox.enable = true;
+  environment.systemPackages = [
+    pkgs.git
+    pkgs.emacs
+    pkgs.vim
+  ];
+
   nix.settings.experimental-features = [
     "nix-command"
     "flakes"
@@ -42,7 +51,5 @@
 
   time.timeZone = lib.mkDefault "Europe/Oslo";
 
-  # TODO: confirm this matches the NixOS release current at install time.
-  # Do not change it after the first install.
   system.stateVersion = "26.05";
 }
