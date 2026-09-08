@@ -23,27 +23,6 @@
     };
   };
 
-  # TODO: move this to a module
-  users.users.ifox = {
-    isNormalUser = true;
-    extraGroups = [
-      "wheel"
-      "networkmanager"
-    ];
-    openssh.authorizedKeys.keys = [
-      "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIFsxaPgxP3IFVGWxiEoO3TP16zIdc5YVBrOdbtFNUNeT macbook"
-    ];
-  };
-
-  # Programs
-  # TODO: move to modules for e.g. dev tools
-  programs.firefox.enable = true;
-  environment.systemPackages = [
-    pkgs.git
-    pkgs.emacs
-    pkgs.vim
-  ];
-
   nix.settings.experimental-features = [
     "nix-command"
     "flakes"
