@@ -196,7 +196,7 @@ in
     };
 
     environment.persistence.${cfg.persistentStoragePath} = {
-      persistentStoragePath = cfg.persistentStoragePath;
+      inherit (cfg) persistentStoragePath;
       inherit (cfg) files directories users;
     };
 
