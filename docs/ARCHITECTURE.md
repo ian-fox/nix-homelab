@@ -20,9 +20,12 @@
 
 ## Shared modules
 
-- [ifox.nix](../modules/nixos/ifox.nix) defines the `ifox` NixOS user and
-  attaches their Home Manager configuration. Import it from each host on which
-  the user should exist; hosts can merge in machine-specific groups and other
-  settings.
-- [dev-tools.nix](../modules/home-manager/dev-tools.nix) is a Home Manager
-  module for the development tools shared across that user's machines.
+### NixOS
+
+- [ifox.nix](../modules/nixos/ifox.nix): defines the `ifox` NixOS user and attaches Home Manager configuration.
+- [persistence.nix](../modules/nixos/persistence.nix): Configures persistence for the erase-your-darlings pattern
+
+### Home manager
+
+- [dev-tools.nix](../modules/home-manager/dev-tools.nix) development tools
+- [firefox.nix](../modules/home-manager/firefox.nix) firefox defaults, including the ability to swap keybinds to match the muscle memory from using CMD on a mac
