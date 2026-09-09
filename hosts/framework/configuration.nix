@@ -11,6 +11,22 @@
   services.displayManager.sddm.enable = true;
   services.desktopManager.plasma6.enable = true;
 
+  ## Turn off tap to click
+  services.libinput = {
+    enable = true;
+    touchpad = {
+      tapping = false;
+      clickMethod = "clickfinger";
+    };
+  };
+
+  ## Plasma Wayland configures libinput through KWin rather than Xorg.
+  home-manager.users.ifox.xdg.configFile."kcminputrc".text = ''
+    [Libinput][Defaults][Touchpad]
+    TapToClick=false
+    ClickMethod=2
+  '';
+
   # After rebuilding, enroll a finger with `fprintd-enroll` and check it
   # with `fprintd-verify`. Sudo/login/polkit accept it automatically.
   services.fprintd.enable = true;
