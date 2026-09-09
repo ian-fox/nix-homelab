@@ -17,7 +17,10 @@
     useGlobalPkgs = true;
     useUserPackages = true;
     users.ifox = {
-      imports = [ ../home-manager/dev-tools.nix ];
+      imports = [
+        ../home-manager/dev-tools.nix
+        ../home-manager/firefox.nix
+      ];
 
       home = {
         username = "ifox";
