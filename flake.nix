@@ -21,8 +21,17 @@
       url = "github:nix-community/disko";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    # Provides the `facter.reportPath` NixOS module option consumed by
+    # hardware detection reports from nixos-facter (the CLI itself ships in
+    # nixpkgs as `pkgs.nixos-facter`, no separate input needed for that).
+    facter.url = "github:nix-community/nixos-facter-modules";
     impermanence = {
       url = "github:nix-community/impermanence";
+      inputs.home-manager.follows = "home-manager";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+    home-manager = {
+      url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
     };
     sops-nix = {
