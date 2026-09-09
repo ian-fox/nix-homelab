@@ -8,9 +8,10 @@ Framework 13 Pro (Intel) laptop.
   `/` (root), `/nix`, `/persist`, and a reserved `/.swapvol`. See
   [disko.nix](./disko.nix).
 - Impermanence: root is wiped back to empty on every boot. Anything meant to
-  survive a reboot must be declared in [persistence.nix](./persistence.nix)
-  under `environment.persistence."/persist"` — config doesn't need an entry
-  since it's rebuilt from this flake, but things like media libraries do.
+  survive a reboot must be declared through the shared
+  [persistence module](../../modules/nixos/persistence.nix) — config doesn't
+  need an entry since it's rebuilt from this flake, but things like media
+  libraries do.
 - Hardware detection is via [nixos-facter](https://github.com/nix-community/nixos-facter)
   rather than a hand-written `hardware-configuration.nix`. `facter.json` in
   this directory starts as an empty placeholder and gets overwritten with a
@@ -31,7 +32,33 @@ Framework 13 Pro (Intel) laptop.
   `--override-input secrets git+ssh://git@github.com/<owner>/nix-secrets`.
   Decryption on the laptop itself uses the host's SSH key as the sops age
   key (`sops.age.sshKeyPaths`), which works here since that key is already
-  persisted across reboots (see persistence.nix).
+  persisted across reboots by the persistence module.
+
+### Persistence
+
+The shared module provides the current system and `ifox` persistence paths
+as defaults. Additional paths merge with those defaults:
+
+```nix
+homelab.persistence = {
+  enable = true;
+  directories = [ "/var/lib/example" ];
+  users.ifox.directories = [ ".local/share/example" ];
+};
+```
+
+Use `lib.mkForce` when a host should replace a default list instead:
+
+```nix
+homelab.persistence = {
+  enable = true;
+  directories = lib.mkForce [ "/var/lib/example" ];
+};
+```
+
+After rebuilding, check the active backing filesystem for any path with
+`persist-check PATH`. It exits successfully for paths backed by `/persist`
+and exits with status 1 for ephemeral paths.
 
 ## Deploying
 

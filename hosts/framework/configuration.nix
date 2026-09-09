@@ -3,6 +3,10 @@
   networking.hostName = "framework";
   networking.networkmanager.enable = true;
 
+  homelab.persistence = {
+    enable = true;
+  };
+
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
 
@@ -45,6 +49,8 @@
   ];
 
   time.timeZone = lib.mkDefault "Europe/Oslo";
+
+  zramSwap.enable = true;
 
   system.stateVersion = "26.05";
 }
