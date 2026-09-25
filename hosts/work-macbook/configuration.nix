@@ -6,6 +6,7 @@
   # Used for backwards compatibility, please read the changelog before changing.
   # $ darwin-rebuild changelog
   system.stateVersion = 6;
+  system.primaryUser = "ifox";
 
   # The platform the configuration will be used on.
   nixpkgs.hostPlatform = "aarch64-darwin";
@@ -18,7 +19,45 @@
     extra-platforms = x86_64-darwin aarch64-darwin
   '';
 
+  users.users.ifox.home = "/Users/ifox";
+
+  nix-homebrew = {
+    enable = true;
+    user = "ifox";
+  };
+
+  homebrew = {
+    enable = true;
+    taps = [
+      {
+        name = "d12frosted/emacs-plus";
+        trusted = true;
+      }
+      "docker/tap"
+    ];
+    brews = [
+      "emacs-plus"
+    ];
+    casks = [
+      "kitty"
+      "signal"
+      "slack"
+      "docker/tap/sbx"
+      "visual-studio-code"
+      "wezterm"
+    ];
+  };
+
+  home-manager = {
+    useGlobalPkgs = true;
+    useUserPackages = true;
+    users.ifox = import ./home.nix;
+  };
+
   environment.systemPackages = [
-    pkgs.sl
+    pkgs.docker-client
+    pkgs.zellij
+    pkgs.skim
+    pkgs.direnv
   ];
 }
