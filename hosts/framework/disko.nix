@@ -28,7 +28,7 @@
                 type = "btrfs";
                 extraArgs = [ "-f" ];
                 subvolumes = {
-                  # Wiped back to empty on every boot, see ./persistence.nix.
+                  # Wiped back to empty on every boot by the persistence module.
                   "/root" = {
                     mountpoint = "/";
                     mountOptions = [

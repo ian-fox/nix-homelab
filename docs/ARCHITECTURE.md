@@ -16,3 +16,16 @@
 
 - [lib](../lib/): Code related to developing the flake. Checks, formatters, etc.
 - [hosts](../hosts/): NixOS configurations, one directory per machine.
+- [modules](../modules/): Reusable NixOS and Home Manager modules shared by hosts.
+
+## Shared modules
+
+### NixOS
+
+- [ifox.nix](../modules/nixos/ifox.nix): defines the `ifox` NixOS user and attaches Home Manager configuration.
+- [persistence.nix](../modules/nixos/persistence.nix): Configures persistence for the erase-your-darlings pattern
+
+### Home manager
+
+- [dev-tools.nix](../modules/home-manager/dev-tools.nix) development tools
+- [firefox.nix](../modules/home-manager/firefox.nix) firefox defaults, including the ability to swap keybinds to match the muscle memory from using CMD on a mac
