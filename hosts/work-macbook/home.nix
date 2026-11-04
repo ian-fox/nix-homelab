@@ -9,6 +9,7 @@
       pkgs.colima
       pkgs.nushell
       pkgs.google-cloud-sdk
+      pkgs.gh
     ];
   };
 }
