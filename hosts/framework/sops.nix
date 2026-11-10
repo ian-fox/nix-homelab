@@ -1,8 +1,8 @@
-{ inputs, ... }:
+{ lib, ... }:
 {
-  imports = [ inputs.sops-nix.nixosModules.sops ];
+  # Stub for public CI
+  sops.defaultSopsFile = lib.mkDefault ../../lib/secrets.yaml;
 
-  sops.defaultSopsFile = "${inputs.secrets}/secrets.yaml";
   # Host SSH key doubles as the sops age key, avoiding a separate key to
   # manage. It's persisted across reboots, see ./persistence.nix.
   sops.age.sshKeyPaths = [ "/etc/ssh/ssh_host_ed25519_key" ];

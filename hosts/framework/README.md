@@ -19,24 +19,20 @@ Framework 13 Pro (Intel) laptop.
 - Secrets ([sops.nix](./sops.nix)): encrypted secrets live in a separate,
   private `nix-secrets` repo rather than in this one, so this config repo
   stays decoupled from (and can remain public independent of) the secrets.
-  The `secrets` flake input defaults to the unencrypted stub at
-  [`lib/secrets.yaml`](../../lib/secrets.yaml), so plain `nix build`/
-  `nix flake check` work with no setup on any machine (this is also what
-  lets CI pass with no access to real secrets at all). There's
-  deliberately no "local checkout" default pointing at a fixed path like
-  `/etc/nix-secrets` — Nix's `git+file` fetcher refuses to resolve through
-  a symlinked path component, and `/etc` itself is a symlink on macOS, so
-  that pattern breaks `nix flake lock`/`nix flake check` on any Mac. Real
-  deploys instead always pass the real repo explicitly:
-  `--override-input secrets git+ssh://git@github.com/<owner>/nix-secrets`.
+  The public `nixosConfigurations.framework` defaults to the unencrypted
+  stub at [`lib/secrets.yaml`](../../lib/secrets.yaml), so builds and CI
+  need no access to private secrets. Deployments with real secrets use a
+  [private deployment flake](#private-deployment-flake) that imports
+  `nixosModules.framework` and overrides `sops.defaultSopsFile`.
   Decryption on the laptop itself uses the host's SSH key as the sops age
   key (`sops.age.sshKeyPaths`), which works here since that key is already
   persisted across reboots (see persistence.nix).
 
 ## Deploying
 
-From a machine that can reach the laptop over SSH (e.g. booted into a NixOS
-live installer):
+For the initial installation before adding secrets, run this from the public
+config repo on a machine that can reach the laptop over SSH (e.g. booted into
+a NixOS live installer):
 
 ```console
 nix run github:nix-community/nixos-anywhere -- \
@@ -56,26 +52,68 @@ partitions the disk with disko (prompts for the LUKS password), and installs.
 Commit the regenerated `facter.json` afterwards. Re-run the same command
 (without wiping) any time the hardware changes and you want to refresh it.
 
+### Private deployment flake
+
+Put a `flake.nix` next to the encrypted `secrets.yaml` in the private
+`nix-secrets` repo:
+
+```nix
+{
+  inputs = {
+    homelab.url = "github:ian-fox/nix-homelab";
+    nixpkgs.follows = "homelab/nixpkgs";
+  };
+
+  outputs = { homelab, nixpkgs, ... }: {
+    nixosConfigurations.framework = nixpkgs.lib.nixosSystem {
+      system = "x86_64-linux";
+      modules = [
+        homelab.nixosModules.framework
+        {
+          sops.defaultSopsFile = ./secrets.yaml;
+          sops.secrets."wifi-psk" = { };
+          # Configure the service consuming the secret here too.
+        }
+      ];
+    };
+  };
+}
+```
+
+The public module uses `lib.mkDefault` for `sops.defaultSopsFile`, so this
+assignment selects the private encrypted file. Keep secret declarations and
+their consumers in this private flake; the public configuration continues to
+evaluate with its stub. Both flakes use the same nixpkgs input.
+
+Stage new `flake.nix` and encrypted `secrets.yaml` files with Git before
+evaluating the private flake, then run `nix flake lock` there and commit the
+resulting `flake.lock`. After changing the public host configuration, run
+`nix flake update homelab` in the private repo to pick up those changes and
+commit its updated lock file.
+
+Run subsequent deployments from this private repo using `--flake .#framework`.
+The public flake has no `secrets` input; `--override-input secrets ...` does
+not select a different SOPS file.
+
 ### Adding the first secret
 
 sops-nix decrypts using the host's SSH key, which doesn't exist until the
 host has booted once — so the first secret can't be encrypted until after
 the initial install above:
 
-1. Boot the freshly-installed host, then read its generated host key:
-   `ssh-keyscan -t ed25519 <laptop-ip>` (or read
-   `/etc/ssh/ssh_host_ed25519_key.pub` directly on the box).
+1. Boot the freshly-installed host, then copy its generated
+   `/etc/ssh/ssh_host_ed25519_key.pub` to `ssh_host_ed25519_key.pub` on the
+   controller machine.
 1. Convert it to an age recipient:
    `nix run github:Mic92/ssh-to-age -- -i ssh_host_ed25519_key.pub`.
 1. In the `nix-secrets` repo, add that age key as a recipient (alongside
    your own personal key, so you can still edit it yourself) and encrypt
    the secret into `secrets.yaml` with `sops`.
-1. Declare it in [sops.nix](./sops.nix) (e.g. `sops.secrets."wifi-psk" = { };`), wire it into whatever consumes it, and rebuild with the real
-   secrets repo overridden in:
+1. Set up the private deployment flake above, declare the secret and wire it
+   into whatever consumes it there, then rebuild from the private repo:
    ```console
    nixos-rebuild switch --target-host root@<laptop-ip> --build-host root@<laptop-ip> \
-     --flake .#framework \
-     --override-input secrets git+ssh://git@github.com/<owner>/nix-secrets
+     --flake .#framework
    ```
    (`--build-host` matching `--target-host` builds on the laptop itself —
    same reasoning as `--build-on-remote` above.)

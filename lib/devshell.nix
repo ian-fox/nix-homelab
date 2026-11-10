@@ -2,8 +2,6 @@
 {
   imports = [ inputs.devshell.flakeModule ];
 
-  flake.description = "This is a test";
-
   perSystem =
     { pkgs, ... }:
     {

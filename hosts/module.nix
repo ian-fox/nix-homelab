@@ -2,5 +2,6 @@
 {
   imports = [
     ./framework
+    ./work-macbook
   ];
 }

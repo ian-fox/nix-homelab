@@ -8,7 +8,6 @@ _: {
   # initrd rather than later in stage 2.
   fileSystems."/persist".neededForBoot = true;
 
-  boot.initrd.systemd.enable = true;
   boot.initrd.systemd.services.rollback-root = {
     description = "Roll back the root subvolume to an empty state";
     wantedBy = [ "initrd.target" ];
