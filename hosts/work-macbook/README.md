@@ -12,11 +12,6 @@ Change defaults in [home.nix](./home.nix). Use `colima start --edit` to change a
 existing profile. The `colima template` command edits the template managed by
 Nix, so make template changes in the flake instead.
 
-On the first rebuild with this change, Home Manager removes the old managed
-`~/.colima/default/colima.yaml` symlink if it is still present. The next
-`colima start` creates a writable configuration from the template. An existing
-regular configuration file is left alone.
-
 ## Firefox tab shortcuts
 
 Karabiner-Elements is installed by nix-darwin through Homebrew, and
