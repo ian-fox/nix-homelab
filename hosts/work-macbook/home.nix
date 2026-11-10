@@ -14,4 +14,10 @@
       pkgs.gh
     ];
   };
+
+  home.file.".colima/default/colima.yaml".text = ''
+    memory: 8
+    vmType: vz
+    rosetta: true
+  '';
 }
