@@ -39,6 +39,7 @@
       "emacs-plus"
     ];
     casks = [
+      "karabiner-elements"
       "kitty"
       "signal"
       "slack"
