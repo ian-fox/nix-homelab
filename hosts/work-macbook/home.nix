@@ -1,4 +1,5 @@
-{ pkgs, ... }: {
+{ pkgs, ... }:
+{
   imports = [ ./karabiner.nix ];
 
   home = {
@@ -15,9 +16,15 @@
     ];
   };
 
-  home.file.".colima/default/colima.yaml".text = ''
-    memory: 8
-    vmType: vz
-    rosetta: true
-  '';
+  # Colima uses this template to create a writable config for each new profile.
+  home.file.".colima/_templates/default.yaml".source =
+    pkgs.runCommand "colima-default.yaml"
+      {
+        nativeBuildInputs = [ pkgs.yq-go ];
+      }
+      ''
+        # Keep upstream defaults for settings not explicitly overridden here.
+        yq '.memory = 8 | .vmType = "vz" | .rosetta = true | .mountType = "virtiofs"' \
+          ${pkgs.colima.src}/embedded/defaults/colima.yaml > "$out"
+      '';
 }
