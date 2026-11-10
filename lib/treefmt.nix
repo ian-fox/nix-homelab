@@ -15,8 +15,11 @@
         programs.statix.enable = true;
         programs.deadnix.enable = true;
 
-        # Markdown
-        programs.mdformat.enable = true;
+        # Markdown, including GitHub Flavored Markdown tables
+        programs.mdformat = {
+          enable = true;
+          plugins = ps: [ ps.mdformat-gfm ];
+        };
       };
 
       devshells.default = {

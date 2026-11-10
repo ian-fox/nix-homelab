@@ -6,10 +6,10 @@ Karabiner-Elements is installed by nix-darwin through Homebrew, and
 [karabiner.nix](./karabiner.nix) manages its selected profile through Home Manager.
 While Firefox is focused, either Option key works with these shortcuts:
 
-| Shortcut | Sent to Firefox | Action |
+| Shortcut     | Sent to Firefox   | Action       |
 | ------------ | ----------------- | ------------ |
-| Option+Left | Control+Shift+Tab | Previous tab |
-| Option+Right | Control+Tab | Next tab |
+| Option+Left  | Control+Shift+Tab | Previous tab |
+| Option+Right | Control+Tab       | Next tab     |
 
 On first launch, follow Karabiner-Elements' setup prompts to allow input
 monitoring, background services, and the virtual keyboard system extension in
