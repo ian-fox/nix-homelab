@@ -1,7 +1,5 @@
 { pkgs, ... }:
 {
-  imports = [ ./karabiner.nix ];
-
   home = {
     username = "ifox";
     stateVersion = "26.05";
