@@ -56,7 +56,6 @@
 
   environment.systemPackages = [
     pkgs.docker-client
-    pkgs.zellij
     pkgs.skim
     pkgs.direnv
   ];

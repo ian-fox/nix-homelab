@@ -1,4 +1,9 @@
-{ pkgs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 {
   home = {
     username = "ifox";
@@ -13,6 +18,16 @@
       pkgs.gh
     ];
   };
+
+  programs.zellij = {
+    enable = true;
+    extraConfig = lib.replaceStrings [ "@zellijConfigDir@" ] [ "${config.xdg.configHome}/zellij" ] (
+      builtins.readFile ./zellij/config.kdl
+    );
+  };
+
+  xdg.configFile."zellij/plugins/tab-mode-indices.wasm".source =
+    ./zellij/plugins/tab-mode-indices.wasm;
 
   # Colima uses this template to create a writable config for each new profile.
   home.file.".colima/_templates/default.yaml".source =
