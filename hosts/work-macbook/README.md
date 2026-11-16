@@ -1,5 +1,54 @@
 # work-macbook
 
+## Kitty
+
+Homebrew installs Kitty; Home Manager generates `~/.config/kitty/kitty.conf`.
+Edit settings in [home.nix](./home.nix) and the Blazer theme colors in
+[kitty/current-theme.conf](./kitty/current-theme.conf), which are included in
+the generated config. Only active settings from the original config are kept;
+Kitty supplies the remaining defaults and handles its own shell integration.
+
+The config uses a 15-point font, copies selections to the clipboard, opens
+links with **Cmd+Click** even when an application grabs the mouse, includes
+colons in double-click word selection, places separator-style tabs at the top,
+and sends the left Option key as Alt.
+
+Before the first rebuild, back up and move the existing
+`~/.config/kitty/kitty.conf` out of the way so Home Manager can create its
+symlink. Apply with `sudo darwin-rebuild switch --flake .#work-macbook` from the
+repository root, then restart Kitty to apply the Option key setting. Make
+future settings and theme changes in the flake.
+
+### Trying settings and themes
+
+The managed config is a symlink into the read-only Nix store. For experiments,
+copy the config directory into a writable temporary directory and launch a
+separate Kitty instance:
+
+```sh
+kitty_trial=$(mktemp -d)
+cp -RL "$HOME/.config/kitty/." "$kitty_trial/"
+chmod -R u+w "$kitty_trial"
+KITTY_CONFIG_DIRECTORY="$kitty_trial" kitty
+```
+
+Use **Cmd+,** or `kitten themes` inside that instance. If running the theme
+picker from the original terminal, use
+`KITTY_CONFIG_DIRECTORY="$kitty_trial" kitten themes`. Setting the config
+directory also redirects theme files and tools; passing only `kitty --config`
+does not redirect every tool's writes.
+
+After experimenting, compare the settings:
+
+```sh
+diff -u "$HOME/.config/kitty/kitty.conf" "$kitty_trial/kitty.conf"
+```
+
+Port settings you want to keep into `programs.kitty` in `home.nix`. If you
+selected a theme, copy its generated `$kitty_trial/current-theme.conf` into
+`kitty/current-theme.conf` in this directory. Rebuild to apply the changes to
+your normal Kitty sessions; experiments stay in the temporary directory.
+
 ## Zellij
 
 Home Manager installs Zellij and manages `~/.config/zellij/config.kdl` and
@@ -16,9 +65,9 @@ repository root, then start a new Zellij session to load the plugin. Zellij asks
 for permission to read and change application state on the plugin's first run.
 
 Normal-mode **Cmd+Alt+Left/Right** bindings are configured for switching tabs,
-but do not yet work reliably in Kitty. Kitty configuration and shortcut
-troubleshooting are pending. **Alt+Left/Right** keeps the combined pane/tab
-navigation. Terminal.app cannot forward Command as Zellij's `Super` modifier.
+but do not yet work reliably in Kitty. Shortcut troubleshooting is pending.
+**Alt+Left/Right** keeps the combined pane/tab navigation. Terminal.app cannot
+forward Command as Zellij's `Super` modifier.
 
 Zellij can miss keybinding changes after a Nix rebuild because the config
 symlink's targets have the same fixed modification time. If a session keeps
