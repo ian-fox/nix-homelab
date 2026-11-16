@@ -39,7 +39,6 @@
       "emacs-plus"
     ];
     casks = [
-      "karabiner-elements"
       "kitty"
       "signal"
       "slack"
@@ -57,7 +56,6 @@
 
   environment.systemPackages = [
     pkgs.docker-client
-    pkgs.zellij
     pkgs.skim
     pkgs.direnv
   ];

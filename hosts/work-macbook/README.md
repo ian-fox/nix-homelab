@@ -1,5 +1,84 @@
 # work-macbook
 
+## Kitty
+
+Homebrew installs Kitty; Home Manager generates `~/.config/kitty/kitty.conf`.
+Edit settings in [home.nix](./home.nix) and the Blazer theme colors in
+[kitty/current-theme.conf](./kitty/current-theme.conf), which are included in
+the generated config. Only active settings from the original config are kept;
+Kitty supplies the remaining defaults and handles its own shell integration.
+
+The config uses a 15-point font, copies selections to the clipboard, opens
+links with **Cmd+Click** even when an application grabs the mouse, includes
+colons in double-click word selection, places separator-style tabs at the top,
+and sends the left Option key as Alt.
+
+Before the first rebuild, back up and move the existing
+`~/.config/kitty/kitty.conf` out of the way so Home Manager can create its
+symlink. Apply with `sudo darwin-rebuild switch --flake .#work-macbook` from the
+repository root, then restart Kitty to apply the Option key setting. Make
+future settings and theme changes in the flake.
+
+### Trying settings and themes
+
+The managed config is a symlink into the read-only Nix store. For experiments,
+copy the config directory into a writable temporary directory and launch a
+separate Kitty instance:
+
+```sh
+kitty_trial=$(mktemp -d)
+cp -RL "$HOME/.config/kitty/." "$kitty_trial/"
+chmod -R u+w "$kitty_trial"
+KITTY_CONFIG_DIRECTORY="$kitty_trial" kitty
+```
+
+Use **Cmd+,** or `kitten themes` inside that instance. If running the theme
+picker from the original terminal, use
+`KITTY_CONFIG_DIRECTORY="$kitty_trial" kitten themes`. Setting the config
+directory also redirects theme files and tools; passing only `kitty --config`
+does not redirect every tool's writes.
+
+After experimenting, compare the settings:
+
+```sh
+diff -u "$HOME/.config/kitty/kitty.conf" "$kitty_trial/kitty.conf"
+```
+
+Port settings you want to keep into `programs.kitty` in `home.nix`. If you
+selected a theme, copy its generated `$kitty_trial/current-theme.conf` into
+`kitty/current-theme.conf` in this directory. Rebuild to apply the changes to
+your normal Kitty sessions; experiments stay in the temporary directory.
+
+## Zellij
+
+Home Manager installs Zellij and manages `~/.config/zellij/config.kdl` and
+`~/.config/zellij/plugins/tab-mode-indices.wasm`. Edit the configuration in
+[zellij/config.kdl](./zellij/config.kdl); Home Manager replaces `@zellijConfigDir@`
+with the user's Zellij config directory. The custom plugin temporarily shows
+tab numbers in Tab mode; its [source and build instructions](./zellij/plugins/tab-mode-indices/README.md)
+are included alongside the compiled WASM file.
+
+Before the first rebuild, back up and move the existing `config.kdl` and
+`plugins/tab-mode-indices.wasm` out of the way so Home Manager can create its
+symlinks. Apply with `sudo darwin-rebuild switch --flake .#work-macbook` from the
+repository root, then start a new Zellij session to load the plugin. Zellij asks
+for permission to read and change application state on the plugin's first run.
+
+In Normal mode, **Cmd+Alt+Left/Right** switches Zellij tabs in Kitty; use the
+left Option key as Alt. **Alt+Left/Right** keeps the combined pane/tab navigation.
+**Ctrl+g** toggles Locked mode; return to Normal mode to use the tab shortcuts.
+Terminal.app cannot forward Command as Zellij's `Super` modifier.
+
+Verified on macOS with Kitty 0.49.2 and Zellij 0.45.1 after rebuilding, fully
+quitting and reopening Kitty, and starting a fresh Zellij session. Key-event
+captures outside Zellij and inside Locked mode preserved both modifiers as
+`CSI 1;11D` (Left) and `CSI 1;11C` (Right). No additional Kitty mappings were needed.
+
+Zellij can miss keybinding changes after a Nix rebuild because the config
+symlink's targets have the same fixed modification time. If a session keeps
+its old bindings, start a new session; detaching and reattaching preserves the
+running session's cached configuration.
+
 ## Colima
 
 Home Manager manages Colima's [default template](https://github.com/abiosoft/colima/blob/main/docs/FAQ.md#setting-the-default-config)
@@ -11,65 +90,3 @@ rebuilds and template changes leave existing profile configurations alone.
 Change defaults in [home.nix](./home.nix). Use `colima start --edit` to change an
 existing profile. The `colima template` command edits the template managed by
 Nix, so make template changes in the flake instead.
-
-## Firefox tab shortcuts
-
-Karabiner-Elements is installed by nix-darwin through Homebrew, and
-[karabiner.nix](./karabiner.nix) manages its selected profile through Home Manager.
-While Firefox is focused, either Option key works with these shortcuts:
-
-| Shortcut     | Sent to Firefox   | Action       |
-| ------------ | ----------------- | ------------ |
-| Option+Left  | Control+Shift+Tab | Previous tab |
-| Option+Right | Control+Tab       | Next tab     |
-
-On first launch, follow Karabiner-Elements' setup prompts to allow input
-monitoring, background services, and the virtual keyboard system extension in
-macOS System Settings. These permissions require local approval.
-
-The entire `~/.config/karabiner` directory is managed by Nix and is read-only;
-make configuration changes in the flake. If you already have a Karabiner
-configuration, move that directory aside before the first rebuild and merge any
-rules you want to keep into the Nix configuration. Home Manager will refuse to
-overwrite an existing unmanaged configuration.
-
-Home Manager restarts Karabiner's configuration watcher when these rules change,
-if the service is already running. Karabiner requires a
-[directory symlink rather than a file symlink](https://karabiner-elements.pqrs.org/docs/manual/misc/configuration-file-path/)
-for configuration monitoring.
-
-For adjacent tabs, turn off Firefox's **Ctrl+Tab cycles through tabs in recently
-used order** in Settings > General > Tabs. The remap applies in the address bar
-and Firefox settings as well as web pages. Additional held modifiers other than
-Caps Lock do not match these rules.
-
-To verify, open three Firefox tabs and test both shortcuts, including with the
-address bar focused. Check another app to confirm Option+Left/Right retains its
-usual behavior there.
-
-## Linux equivalent
-
-[xremap](https://github.com/xremap/xremap) supports the same app-specific remap on
-Linux, including Wayland. Its [NixOS module](https://github.com/xremap/nix-flake)
-can express the rules as:
-
-```nix
-services.xremap.config.keymap = [
-  {
-    name = "Firefox tab navigation";
-    application.only = [ "firefox" ];
-    exact_match = true;
-    remap = {
-      "Alt-Left" = "Ctrl-Shift-Tab";
-      "Alt-Right" = "Ctrl-Tab";
-    };
-  }
-];
-```
-
-This is a configuration example, not enabled on `framework`: that host has no
-desktop session configured yet. Enabling it requires importing xremap's NixOS
-module and setting up application detection for the chosen desktop (GNOME and
-KDE Wayland need desktop extensions). Confirm Firefox's application identifier
-for that session; it can differ from `firefox`. On Linux these bindings replace
-Firefox's Alt+Left/Right history navigation.

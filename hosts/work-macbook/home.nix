@@ -1,7 +1,10 @@
-{ pkgs, ... }:
 {
-  imports = [ ./karabiner.nix ];
-
+  config,
+  lib,
+  pkgs,
+  ...
+}:
+{
   home = {
     username = "ifox";
     stateVersion = "26.05";
@@ -15,6 +18,36 @@
       pkgs.gh
     ];
   };
+
+  programs.kitty = {
+    enable = true;
+    # Kitty is installed by Homebrew; let it handle shell integration too.
+    package = null;
+    shellIntegration.mode = null;
+
+    settings = {
+      font_size = 15.0;
+      copy_on_select = "clipboard";
+      select_by_word_characters = "@-./_~?&=%+#:";
+      tab_bar_edge = "top";
+      tab_bar_style = "separator";
+      tab_powerline_style = "slanted";
+      macos_option_as_alt = "left";
+    };
+
+    mouseBindings."cmd+left release" = "grabbed,ungrabbed mouse_click_url";
+    extraConfig = builtins.readFile ./kitty/current-theme.conf;
+  };
+
+  programs.zellij = {
+    enable = true;
+    extraConfig = lib.replaceStrings [ "@zellijConfigDir@" ] [ "${config.xdg.configHome}/zellij" ] (
+      builtins.readFile ./zellij/config.kdl
+    );
+  };
+
+  xdg.configFile."zellij/plugins/tab-mode-indices.wasm".source =
+    ./zellij/plugins/tab-mode-indices.wasm;
 
   # Colima uses this template to create a writable config for each new profile.
   home.file.".colima/_templates/default.yaml".source =
