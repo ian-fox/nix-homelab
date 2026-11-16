@@ -21,6 +21,8 @@
 
   users.users.ifox.home = "/Users/ifox";
 
+  fonts.packages = [ pkgs.nerd-fonts.commit-mono ];
+
   nix-homebrew = {
     enable = true;
     user = "ifox";

@@ -8,10 +8,11 @@ Edit settings in [home.nix](./home.nix) and the Blazer theme colors in
 the generated config. Only active settings from the original config are kept;
 Kitty supplies the remaining defaults and handles its own shell integration.
 
-The config uses a 15-point font, copies selections to the clipboard, opens
-links with **Cmd+Click** even when an application grabs the mouse, includes
-colons in double-click word selection, places separator-style tabs at the top,
-and sends the left Option key as Alt.
+nix-darwin installs 0xProto Nerd Font; Kitty uses its monospace variant
+at 15 points. The config copies selections to the clipboard, opens links with
+**Cmd+Click** even when an application grabs the mouse, includes colons in
+double-click word selection, places separator-style tabs at the top, and sends
+the left Option key as Alt.
 
 Before the first rebuild, back up and move the existing
 `~/.config/kitty/kitty.conf` out of the way so Home Manager can create its

@@ -25,8 +25,12 @@
     package = null;
     shellIntegration.mode = null;
 
+    font = {
+      name = "Commit Nerd Font Mono";
+      size = 18.0;
+    };
+
     settings = {
-      font_size = 15.0;
       copy_on_select = "clipboard";
       select_by_word_characters = "@-./_~?&=%+#:";
       tab_bar_edge = "top";
