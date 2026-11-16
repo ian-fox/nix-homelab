@@ -64,10 +64,15 @@ symlinks. Apply with `sudo darwin-rebuild switch --flake .#work-macbook` from th
 repository root, then start a new Zellij session to load the plugin. Zellij asks
 for permission to read and change application state on the plugin's first run.
 
-Normal-mode **Cmd+Alt+Left/Right** bindings are configured for switching tabs,
-but do not yet work reliably in Kitty. Shortcut troubleshooting is pending.
-**Alt+Left/Right** keeps the combined pane/tab navigation. Terminal.app cannot
-forward Command as Zellij's `Super` modifier.
+In Normal mode, **Cmd+Alt+Left/Right** switches Zellij tabs in Kitty; use the
+left Option key as Alt. **Alt+Left/Right** keeps the combined pane/tab navigation.
+**Ctrl+g** toggles Locked mode; return to Normal mode to use the tab shortcuts.
+Terminal.app cannot forward Command as Zellij's `Super` modifier.
+
+Verified on macOS with Kitty 0.49.2 and Zellij 0.45.1 after rebuilding, fully
+quitting and reopening Kitty, and starting a fresh Zellij session. Key-event
+captures outside Zellij and inside Locked mode preserved both modifiers as
+`CSI 1;11D` (Left) and `CSI 1;11C` (Right). No additional Kitty mappings were needed.
 
 Zellij can miss keybinding changes after a Nix rebuild because the config
 symlink's targets have the same fixed modification time. If a session keeps
