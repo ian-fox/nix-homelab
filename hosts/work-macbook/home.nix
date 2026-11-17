@@ -31,7 +31,7 @@
     };
 
     settings = {
-      copy_on_select = "clipboard";
+      copy_on_select = "no";
       select_by_word_characters = "@-./_~?&=%+#:";
       tab_bar_edge = "top";
       tab_bar_style = "separator";
@@ -49,6 +49,21 @@
       builtins.readFile ./zellij/config.kdl
     );
   };
+
+  xdg.configFile."zellij/config.kdl".onChange = ''
+    (
+      configFile=${lib.escapeShellArg "${config.xdg.configHome}/zellij/config.kdl"}
+      configTarget=$(readlink "$configFile")
+      reloadFile=$(mktemp "''${configFile}.reload.XXXXXX")
+      trap 'ln -sfn "$configTarget" "$configFile"; rm -f "$reloadFile"' EXIT
+      trap 'exit 1' HUP INT TERM
+
+      # Give Zellij's file watcher a fresh timestamp, then restore the Nix symlink.
+      cp -L "$configFile" "$reloadFile"
+      mv -f "$reloadFile" "$configFile"
+      sleep 3
+    )
+  '';
 
   xdg.configFile."zellij/plugins/tab-mode-indices.wasm".source =
     ./zellij/plugins/tab-mode-indices.wasm;

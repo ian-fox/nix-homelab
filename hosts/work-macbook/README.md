@@ -9,7 +9,8 @@ the generated config. Only active settings from the original config are kept;
 Kitty supplies the remaining defaults and handles its own shell integration.
 
 nix-darwin installs 0xProto Nerd Font; Kitty uses its monospace variant
-at 15 points. The config copies selections to the clipboard, opens links with
+at 15 points. Highlighting text leaves the clipboard unchanged; **Cmd+C** copies
+the selection. The config opens links with
 **Cmd+Click** even when an application grabs the mouse, includes colons in
 double-click word selection, places separator-style tabs at the top, and sends
 the left Option key as Alt.
@@ -70,15 +71,23 @@ left Option key as Alt. **Alt+Left/Right** keeps the combined pane/tab navigatio
 **Ctrl+g** toggles Locked mode; return to Normal mode to use the tab shortcuts.
 Terminal.app cannot forward Command as Zellij's `Super` modifier.
 
-Verified on macOS with Kitty 0.49.2 and Zellij 0.45.1 after rebuilding, fully
-quitting and reopening Kitty, and starting a fresh Zellij session. Key-event
+Highlighting text leaves the selection visible without copying it. **Cmd+C**
+copies the Zellij selection in every mode, including Locked mode. Kitty's default
+`copy_or_noop` binding copies Kitty selections (such as **Shift+Drag**) and forwards
+**Cmd+C** to Zellij when Kitty has no selection.
+
+The tab shortcuts were verified on macOS with Kitty 0.49.2 and Zellij 0.45.1 after
+rebuilding, fully quitting and reopening Kitty, and starting a fresh Zellij session. Key-event
 captures outside Zellij and inside Locked mode preserved both modifiers as
 `CSI 1;11D` (Left) and `CSI 1;11C` (Right). No additional Kitty mappings were needed.
 
-Zellij can miss keybinding changes after a Nix rebuild because the config
-symlink's targets have the same fixed modification time. If a session keeps
-its old bindings, start a new session; detaching and reattaching preserves the
-running session's cached configuration.
+Home Manager reloads changed Zellij settings in existing sessions after
+`darwin-rebuild switch`. The `onChange` hook in [home.nix](./home.nix) runs only
+when the generated `config.kdl` contents change. Because Nix store files share a
+fixed modification time, the hook temporarily replaces the managed symlink with
+a fresh copy, waits three seconds for Zellij's file watcher, then restores the
+symlink. It also restores the symlink if the hook fails or is interrupted. Panes
+and programs keep running; plugin changes can still require a new session.
 
 ## Colima
 
